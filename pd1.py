@@ -1591,19 +1591,522 @@ min 63769
 max 500505
 
 
-'''
+=========student.csv file============
+roll_no,name,fee
+101,A,5000
+102,B,70000
+103,C,50500
+104,D,500505
+105,E,6666
+106,F,NA
+107,X,5000
+108,E,6666
+109,F,NA
+110,X,6666
+111,E,NA
+112,F,5000
+113,X,34234
+114,E,5000
+115,F,70001
 
+=======================
 
+# Excecise:
+--------------
+1. sepearate non nulls from the studens series, which is generated from students.csv file, and assign 
+this series to existing_marks variable?
 
-
-def read_csv_file():
+Answer:
+---------
+def seperate_non_nulls():
     df = pd.read_csv('student.csv',
                      usecols=['name','fee'],
                      index_col='name',
                      )
     # convert df into series object
     s = df.squeeze()
-    print('Describe ',s.describe())
+    print('ORIGINAL SERIES ',s)
+    print('SIZE ',s.size)
+    # print('Describe ',s.describe())
+    non_nulls = s.dropna()
+    print('NON Nulls ',non_nulls)
+    print(non_nulls.size)
 
-read_csv_file()
+seperate_non_nulls()
 
+Answer-2:
+
+
+def not_null():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    student = df.squeeze()
+    existing_marks = student[student.notnull()]
+    print('existing_marks ',existing_marks)
+
+not_null ()
+
+
+
+
+2. Find the sum of all sudent marks?
+
+Example :-
+----------
+
+def sum_of_stuend_marks():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print('total student marks ',s.sum())
+
+sum_of_stuend_marks()
+
+
+3. find the students whose marks are >= 500?
+
+Example:-
+-----------
+def students_marks_greter_than_eql_to_500():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print('Result ',s.loc[s>=500])
+    print('Result ',s[s>=500])
+    print('Result ',s.get(s>=500))
+
+students_marks_greter_than_eql_to_500()
+
+
+
+
+4. find the sum of all student marks which are >= 500?
+
+Example:-
+------------
+
+def students_marks_greter_than_eql_to_500():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print('Result ',s.loc[s>=500].sum())
+    print('Result ',s[s>=500].sum())
+    print('Result ',s.get(s>=500).sum())
+
+students_marks_greter_than_eql_to_500()
+
+
+5. How Many students got marks less than 350?
+
+Answer:
+-------
+def no_of_student_get_less_than_350():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print('Result ',s.loc[s<=350].count())
+    print('Result ',s[s<=350].count())
+    print('Result ',s.get(s<=350).count())
+
+no_of_student_get_less_than_350()
+
+
+6. How Many studets got marks >= 400?
+
+Answer:
+---------
+def no_of_student_get_gt_400():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print('Result ',s.loc[s>=400].count())
+    print('Result ',s[s>=400].count())
+    print('Result ',s.get(s>=400).count())
+
+no_of_student_get_gt_400()
+
+7. find highest marks in the series
+s.max()
+8. field list marks in the series
+s.min()
+
+'''
+
+# finding index labels associated with mas value and min value:
+# --------------------------------------------------------------
+'''
+Without using readymade methods:
+
+
+def max_and_min_marks():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.max())
+    print(s[s==s.max()].index)
+    print(s[s==s.max()].index[0])
+
+max_and_min_marks()
+
+Output:
+-----------
+800.0
+Index(['E'], dtype='object', name='name')
+E
+
+# We can do same thing directly byusing ready made methods:
+idxmax() and idmin()
+
+idxmax()
+It returns index label associated with mas value
+
+
+def max_and_min_marks():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.idxmax())
+    print(s.idxmin())
+max_and_min_marks()
+
+s.idxmax() ==> Returns index label associated with max value.
+s.idxmin() ==> Returns index label associated with min value..
+s.max()    ==> Returns only max value but not index label
+s.min()    ==> Returns only min value but not index label
+
+
+Note :  If multiple max/min values then idxmax and idxmin returns only first matched index label.
+'''
+
+# Finding first n largest and smallest values : nlargest() and nsmallest():
+#--------------------------------------------------------------------------
+'''
+s.nlargest(n=5) ==> Returns the largest n elements
+
+Example:-
+--------------
+
+
+def comman():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.nlargest(n=3))
+comman()
+
+OUTPUT:-
+----------
+
+name
+E    800.0
+E    500.0
+E    500.0
+Name: fee, dtype: float64
+
+
+
+
+s.nsmallest(n=5) ==> Returns the smallest n elements
+
+Example:-
+---------
+
+def comman():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.nsmallest(n=3))
+comman()
+
+OUTPUT:
+-----------
+name
+F    100.0
+X    150.0
+X    200.0
+Name: fee, dtype: float64
+
+'''
+# Sorting the values by using short_values() method:
+#------------------------------------------------
+'''
+This method is helpful to sort only values byt not index labels.
+
+Syntax:-
+=========
+Series.sort_values(axis=0,ascending=True,inplace=False,kind='quicksort'
+na_position='last')
+
+This method is always going to return new series objects.
+
+PARAMETERS:
+==============
+ascending: If True, sort values in ascending order, otherwise descending . 
+Default is True Which is ment for ascending order.
+
+inplace: default False
+If True, perform operation in -place.
+
+
+If we are not passing this parameter then sort_values() method
+return a new series object.
+
+If we wants to sort in exisiting object only then we have to set inplace=True
+
+kind :choice of sorting algoritham
+{'quicksort', 'mergesort', 'heapsort', stable'}, default ' quicksort'
+
+
+na_position : {'first' or 'last' } default 'last'
+
+Argument 'first' puts NaNs at the beginning, 'last' puts NaNs at the end.
+
+
+Example :
+---------
+
+def comman():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.sort_values())
+comman()
+
+
+def comman():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    abc=s.copy()
+    new = abc.sort_values(inplace=True)
+    print(abc)
+    print(new)
+comman()
+
+
+# sorting based on index labels by using sort_index() method:
+Exactly same as sort_values() method including parameter except that sorting based on 
+index labels but not based on values.
+
+Note : sort_values() : Returns a new Series object sorted based on values.
+sort_index() : returns a new Series object sorted based on index labels.
+
+'''
+
+# BASIC ARITHMETIC OPERATION FOR SERIES OBJECTS:
+#----------------------------------------------------
+'''
+1. Scalar means contant value.
+-------------------------------
+scalar means constant value.
+
+We can perform arithmetic operation betweeen series object and scalar value.
+Operation will be performed for every element.
+
+eg:
+----
+s = pd.Series([10,20,30,40,50])
+print(s)
+print(s+10)
+print(s-3)
+print(s*3)
+print(s/2)
+
+Note : If value the NA, then after performing scalar operation the result 
+is always NA Only.
+
+Reason:
+---------
+If we perform any operation on NA then result is always NA.
+
+Example
+------------
+s = pd.Series([10,20,30,40,50,pd.NA])
+print(s)
+print(s+10)
+print(s-3)
+print(s*3)
+print(s/2)
+
+
+2. Arithmetic operation between 2 series objects:
+--------------------------------------------------
+We can perform arithmetic opeation between two Series objects.
+These opeartion will be performed only on matched indexex.
+For unmatched indexes, NaN will be returned. 
+
+Example:
+-----------
+
+s1 = pd.Series([10,20,30,4])
+s2 = pd.Series([10,20,30,4])
+print(s1)
+print(s1+s2)
+
+Output:
+0    10
+1    20
+2    30
+3     4
+dtype: int64
+0    20
+1    40
+2    60
+3     8
+dtype: int64
+
+Example-2:
+-----------
+s1 = pd.Series([10,20,30,4],index=['A','B','C','D'])
+s2 = pd.Series([10,20,30,4],index=['C','D','E','F'])
+print(s1)
+print(s1+s2)
+
+Output:
+---------
+A     NaN
+B     NaN
+C    40.0
+D    24.0
+E     NaN
+F     NaN
+dtype: float64
+
+Note:- Series class contains equivalent methods for arithmetic opeaation
+
+s1+s2  ==> s1.add(s2)
+s1-s2  ==> s1.sub(s2)
+s1*s2  ==> s1.mul(s2)
+s1/s2  ==> s1.div(s2)
+
+
+Example:-
+
+
+s1 = pd.Series([10,20,30,4],index=['A','B','C','D'])
+s2 = pd.Series([10,20,30,4],index=['C','D','E','F'])
+print(s1)
+print(s1.add(s2))
+
+Output:-
+----------
+A     NaN
+B     NaN
+C    40.0
+D    24.0
+E     NaN
+F     NaN
+dtype: float64
+
+fill_value parameter:
+--------------------
+We can pass fill_value parameter for add() , sub(), mul() and div() methods.
+IF the matched index is not available, then fill_value will be considered.
+
+Example:
+---------
+
+
+s1 = pd.Series([10,20,30,4],index=['A','B','C','D'])
+s2 = pd.Series([10,20,30,4],index=['C','D','E','F'])
+print(s1)
+print(s1.add(s2,fill_value=0))
+
+Output:
+------------
+name
+F   NaN
+F   NaN
+E   NaN
+Name: fee, dtype: float64
+A    10
+B    20
+C    30
+D     4
+dtype: int64
+A    10.0
+B    20.0
+C    40.0
+D    24.0
+E    30.0
+F     4.0
+
+
+Example:-
+
+s1 = pd.Series([10,np.NaN],index=['A','Z'])
+s2 = pd.Series([10,20],index=['A','B'])
+print(s1)
+print(s1.add(s2,fill_value=0))
+
+OUTPUT:-
+---------
+
+A    10.0
+Z     NaN
+dtype: float64
+A    20.0
+B    20.0
+Z     NaN
+dtype: float64
+
+
+fill_value parameter is the advantage of add()  methods when compare with 
++ operator.
+
+'''
+
+s1 = pd.Series([10,np.NaN],index=['A','Z'])
+s2 = pd.Series([10,20],index=['A','B'])
+print(s1)
+print(s1.add(s2,fill_value=0))
+
+
+def comman():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    abc=s.copy()
+    new = abc.sort_values(inplace=True)
+    print(abc)
+    print(new)
+# comman()
