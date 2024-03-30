@@ -2090,12 +2090,54 @@ dtype: float64
 fill_value parameter is the advantage of add()  methods when compare with 
 + operator.
 
-'''
 
-s1 = pd.Series([10,np.NaN],index=['A','Z'])
-s2 = pd.Series([10,20],index=['A','B'])
-print(s1)
-print(s1.add(s2,fill_value=0))
+
+Cumlative Operations / Progressive Operations:
+-------------------------------------------
+There are multiple cumulative operations applicable for Series Object.
+
+s.cumsum():
+
+Example:-
+-------------
+
+def comman():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.sum())
+    print(s.cumsum())
+comman()
+
+OUTPUT:-
+-------------
+4130.0
+name
+A     300.0
+B     700.0
+C     930.0
+D    1180.0
+E    1680.0
+F       NaN
+X    1880.0
+E    2680.0
+F       NaN
+X    2980.0
+E       NaN
+F    3080.0
+X    3230.0
+E    3730.0
+F    4130.0
+Name: fee, dtype: float64
+
+Note : Bydefault cumsum() method ignores NAs while performing cumulative sum 
+operations. By using skipna parameter we can customize this behaviour, The 
+default value is True
+
+Example:-
 
 
 def comman():
@@ -2105,8 +2147,525 @@ def comman():
                      )
     # convert df into series object
     s = df.squeeze()
-    abc=s.copy()
-    new = abc.sort_values(inplace=True)
-    print(abc)
-    print(new)
-# comman()
+    print(s.sum())
+    print(s.cumsum(skipna=False))
+comman()
+
+Output:-
+-------
+4130.0
+name
+A     300.0
+B     700.0
+C     930.0
+D    1180.0
+E    1680.0
+F       NaN
+X       NaN
+E       NaN
+F       NaN
+X       NaN
+E       NaN
+F       NaN
+X       NaN
+E       NaN
+F       NaN
+Name: fee, dtype: float64
+
+Note :-  any number with NaN is always NaN
+
+
+s.prod() and s.cumprod():
+---------------------------------
+s.prod() :- Returns the product of all values.
+s.cumprod()  :-  Returns the comulative products of values
+
+
+Example:-
+--------------
+
+def comman():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.prod())
+    print(s.cumprod())
+comman()
+
+OUTPUT:-
+-----------
+4.968e+29
+name
+A    3.000000e+02
+B    1.200000e+05
+C    2.760000e+07
+D    6.900000e+09
+E    3.450000e+12
+F             NaN
+X    6.900000e+14
+E    5.520000e+17
+F             NaN
+X    1.656000e+20
+E             NaN
+F    1.656000e+22
+X    2.484000e+24
+E    1.242000e+27
+F    4.968000e+29
+Name: fee, dtype: float64
+
+
+# s.min () and s.cummin():
+-------------------------
+s.min() ==> REturns the minimum values .
+s.cummin() -->  Returns the cumulative minimum value including current values
+
+Example:-
+def comman():
+    df = pd.Series(data=[1,2,3,4,5])
+    # convert df into series object
+    s = df.squeeze()
+    print(s.min())
+    print(s.cummin())
+comman()
+
+output:-
+-------------
+1
+
+0    1
+1    1
+2    1
+3    1
+4    1
+dtype: int64
+
+
+# s.max() and s.cummax()
+--------------------------
+
+Example:
+
+def comman():
+    df = pd.Series(data=[1,2,3,4,5])
+    # convert df into series object
+    s = df.squeeze()
+    print(s.max())
+    print(s.cummax())
+comman()
+
+
+Output:-
+----------------
+5
+0    1
+1    2
+2    3
+3    4
+4    5
+dtype: int64
+
+
+# Finding Discreate Differenct by using diff() method
+------------------------------------------------------
+Series.diff(period=1)
+    First discreate differenct of element.
+
+Calculates the differenct of a Series element compared with another
+element in Series (default is element in previous row).
+
+Example :
+---------------
+def comman():
+    df = pd.Series(data=[10,20,30,40,50])
+    # convert df into series object
+    s = df.squeeze()
+    print(s.diff()) # s.duff(periods=1)
+comman()
+
+Output:-
+--------------
+0     NaN
+1    10.0
+2    10.0
+3    10.0
+4    10.0
+dtype: float64
+
+
+Note :- 
+i1  ----> v1   
+i2  ----> v2
+i3  ----> v3
+i4  ----> v4 
+i5  ----> v5
+
+periods=1
+i1  ----> v1-NaN
+i2  ----> v2-v1
+i3  ----> v3-v2
+i4  ----> v4 -v3
+i5  ----> v5-v4
+
+periods=1
+i1  ----> v1-NaN
+i2  ----> v2-NaN
+i3  ----> v3-v1
+i4  ----> v4 -v2
+i5  ----> v5-v3
+
+Example
+------------
+def comman():
+    df = pd.Series(data=[10,20,30,40,50])
+    # convert df into series object
+    s = df.squeeze()
+    print(s.diff(periods=2)) # s.duff(periods=1)
+comman()
+
+OUTPUT
+-----------
+0     NaN
+1     NaN
+2    20.0
+3    20.0
+4    20.0
+dtype: float64
+
+
+periods = -1 : (difference with next element)
+------------------------------------------------
+i1  ----> v1-v2
+i2  ----> v2-v3
+i3  ----> v3-v4
+i4  ----> v4 -v5
+i5  ----> v5-NaN
+
+
+Example
+----------------
+def comman():
+    df = pd.Series(data=[10,20,30,40,50])
+    # convert df into series object
+    s = df.squeeze()
+    print(s.diff(periods=-1)) # s.duff(periods=1)
+comman()
+
+OUTPUT:-
+--------------
+0   -10.0
+1   -10.0
+2   -10.0
+3   -10.0
+4     NaN
+dtype: float64
+
+Note :- This diff() method is very helpful while working with Time 
+Series in DataScience.
+
+# Filtering element of Series based on values:
+---------------------------------------------------
+By Using boolean masking , we can filter elements.
+
+eg:- to Filter all students whose marks are less than 300
+
+Answer: -
+-----------
+def lt300(x):
+    return x < 300
+print('callable ')
+def read_csv_file():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s[s<300]) # Boolean Masking
+    print(s.loc[s<300]) # Boolean Masking
+    print(s[lt300])# passing callable object
+read_csv_file()
+
+Output:-
+
+callable 
+name
+C    230.0
+D    250.0
+X    200.0
+F    100.0
+X    150.0
+Name: fee, dtype: float64
+name
+C    230.0
+D    250.0
+X    200.0
+F    100.0
+X    150.0
+Name: fee, dtype: float64
+name
+C    230.0
+D    250.0
+X    200.0
+F    100.0
+X    150.0
+Name: fee, dtype: float64
+
+
+Note :-
+--------------
+In the above example filtering  happend based on values
+but not based on index labels.
+
+    1. filter()
+    2. where()
+    3. mask()
+
+If we wants to filter elements based on index labels then we should go for
+filter() method:
+
+
+All these method filter elements based on index labels but not based on values.
+
+
+Filtering elements of Series  based on index label by using filter() methods:-
+------------------------------------------------------------------------------
+Syntax:-
+------------
+Series.filter(items=None,like=None,regex=None,exis=None)
+    Subset the Series rows according to the specified index labels.
+
+Note that this routine does not filter a series on it content,
+The filter is applied to the labels of the index.
+
+regex  parameter
+------------------
+eg :- Telest rows of series where index labels are starts with 'E':
+We have to use regex parameter( regex - Regular Expression) 
+
+Example :- 
+
+
+def read_csv_file():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.filter(regex='^E'))
+read_csv_file()
+
+eg :- Telest rows of series where index labels are ends with 'E':
+
+def read_csv_file():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.filter(regex='N$'))
+read_csv_file()
+
+output:-
+
+Series([], Name: fee, dtype: float64)
+
+note :- need to learn about Regular Expression
+
+
+like parameter
+------------------
+
+eg : To select rows of Series where index labes contain substring 'nn'
+
+def read_csv_file():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.filter(like='nn'))
+read_csv_file()
+
+output
+
+name
+Sunny    400.0
+Bunny    250.0
+Hunny    200.0
+Name: fee, dtype: float64
+
+
+Note :- like  parameter is similar to like keyword in SQL Query
+
+# Replacing element of Series by using where () method:
+--------------------------------------------------------
+
+Syntax:-
+------------------
+Series.where(cond, other=nan, inplace-False, axis=None, lebel=None,
+                errors='raise',try_cast=NoDefault.no_default
+                )
+
+    Replace values where the condition is False, ie if condition is True then
+    replacement wont' be happend.
+
+    By using other parameter we can provide new value.
+
+
+eg-1:
+------
+Replace value as 'Failed' where marks are < 300?
+
+Example:-
+
+def read_csv_file():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.where(lambda x: x>300,other='Failed'))
+read_csv_file()
+
+Output:-
+----------
+name
+A        Failed
+Sunny     400.0
+C        Failed
+Bunny    Failed
+E         500.0
+F        Failed
+Hunny    Failed
+E         800.0
+F        Failed
+X        Failed
+E        Failed
+F        Failed
+X        Failed
+E         500.0
+F         400.0
+Name: fee, dtype: object
+
+
+# Replacing element of Series by using mask() method:-
+---------------------------------------------------------
+Replpace values where condition is True.
+Example:-
+
+
+def read_csv_file():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.where(lambda x: x<300,other='Failed'))
+read_csv_file()
+
+Output:-
+------------
+
+name
+A        Failed
+Sunny    Failed
+C         230.0
+Bunny     250.0
+E        Failed
+F        Failed
+Hunny     200.0
+E        Failed
+F        Failed
+X        Failed
+E        Failed
+F         100.0
+X         150.0
+E        Failed
+F        Failed
+Name: fee, dtype: object
+
+
+Example2: Replace value as first class where marks in
+between > 500
+
+def read_csv_file():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.where(lambda x: x<500,other='First class'))
+read_csv_file()
+
+
+Output:-
+
+name
+A              300.0
+Sunny          400.0
+C              230.0
+Bunny          250.0
+E        First class
+F        First class
+Hunny          200.0
+E        First class
+F        First class
+X              300.0
+E        First class
+F              100.0
+X              150.0
+E        First class
+F              400.0
+Name: fee, dtype: object
+
+NOTE:-  mask() replaces value if the condition is True where as where() replaces
+values if the condition False.
+
+TRANSFORMING SERIES OBJECT:-
+-----------------------------
+Transforming means updating values of Series object.
+
+There are 2 types of transformations
+    1. Sport Transformation 
+    2. Global Transformation
+
+
+1. Sport Transformation:-
+-------------------------------
+A subset of records will be updated but not all.
+We can perform this operation by using update() method.
+
+2. Global Transformation:-
+-----------------------------
+It will update full set of records/all records
+
+We can perform this operation by using either map() method or apply() methods.
+
+
+
+Transforming Series object by  using update () method:-
+--------------------------------------------------------
+
+
+
+'''
+
+def read_csv_file():
+    df = pd.read_csv('student.csv',
+                     usecols=['name','fee'],
+                     index_col='name',
+                     )
+    # convert df into series object
+    s = df.squeeze()
+    print(s.where(lambda x: x<500,other='First class'))
+read_csv_file()
+
