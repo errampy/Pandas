@@ -2630,13 +2630,14 @@ Name: fee, dtype: object
 NOTE:-  mask() replaces value if the condition is True where as where() replaces
 values if the condition False.
 
+-----------------------------
 TRANSFORMING SERIES OBJECT:-
 -----------------------------
 Transforming means updating values of Series object.
 
 There are 2 types of transformations
-    1. Sport Transformation 
-    2. Global Transformation
+    1. Spot/Partial Transformation 
+    2. Global/Full Transformation
 
 
 1. Sport Transformation:-
@@ -2654,10 +2655,227 @@ We can perform this operation by using either map() method or apply() methods.
 
 Transforming Series object by  using update () method:-
 --------------------------------------------------------
+without update() method:
+-----------------
 
+We can update a particular element by using normal indexing or loc/iloc indexers.
+
+Example:-
+--------------
+s = pd.Series([10,20,30,40])
+s[0]=200
+s.loc[1]=400
+print(s)
+
+Output:
+---------------
+0    200
+1    400
+2     30
+3     40
+dtype: int64
+
+In the above program, to update n elements, we have to use n lines of code.
+
+To perform this opearation in a simple way , we should go for update() method.
+
+
+with update() method:
+--------------------
+
+Example:-
+
+s = pd.Series([10,20,30,40])
+s.update(pd.Series([100,400],index=[1,2]))
+print(s)
+
+Output:-
+-------------
+0     10
+1    100
+2    400
+3     40
+dtype: int64
+
+SYNTAX OF update() method:
+---------------------------------
+Series.update(other)
+    Modify Series in place using values from passed Series.
+    Uses non - NA values from passed Series to make updates. Aligns on index.
+
+Parameter:
+--------------------
+otherSeries, or object coercible into Series like list or dict etc.
+
+
+GLOBAL TRANSFORMATION OF SERIES BY USING apply() METHOD:
+---------------------------------------------------------
+Syntax :-
+---------
+Series.apply(func, convert_dtype=True, args() , **kwargs)
+    Invoke function on every values of the series and returns values
+    will be considered in the result.
+
+1.The function can be ufunc (a NumPy function that applies to the entire
+Series ) or a normal Python function.
+2. It returns a new Series with retured values of the function, ie
+
+Example:-Square the values by defining a function and passing it as argument to apply()
+
+def square(x):
+    return x*x
+s = pd.Series([10,20,30],
+              index=['Landon','New york','Helsinki'])
+s = s.apply(square)
+print(s)
+
+Output:
+-------------
+Name: fee, dtype: float64
+Landon      100
+New york    400
+Helsinki    900
+dtype: int64
+
+Example by using lamda function
+-------------------------------
+
+s = pd.Series([10,20,30],
+              index=['Landon','New york','Helsinki'])
+s = s.apply(lambda x:x**2)
+print(s)
+
+
+Output:-
+-------------
+Landon      100
+New york    400
+Helsinki    900
+dtype: int64
+
+Define a custom function that needs additional positinal arguments and
+pass these additional arguments using the args keyword.
+
+increment every value by 10
+
+def increment(x,increment):
+    return x + increment
+
+s = pd.Series([10,20,30],
+              index=['Landon','New york','Helsinki'])
+s = s.apply(increment,args=(10,))
+print(s)
+
+Output:
+-------
+Landon      20
+New york    30
+Helsinki    40
+dtype: int64
+
+Example :- Define a custom function that takes keyword arguments
+ and pass these argument to apply
+
+ def increment(x,increment):
+    return x + increment
+
+s = pd.Series([10,20,30],
+              index=['Landon','New york','Helsinki'])
+s = s.apply(increment,increment=10)
+print(s)
+
+Output:
+-----------
+Landon      20
+New york    30
+Helsinki    40
+dtype: int64
+
+NOTE: 
+1. We can pass parameters to the input function by using either args argument
+or by using keyword arguments.
+2. The function can be normal python function/lamda function/numpy ufunc
+
+
+# GLOBAL TRANSFORMATION OF SERIES BY USING map() method:-
+---------------------------------------------------------
+It is limited version of apply() method.
+
+Here we can not pass arguments to the input function.
+Syntax:-
+========
+Series.map(arg, na_action=None)
+    Map values of Series according to input correspondence
+
+Used for substituting each value in a series with another value, 
+that may be derived from a function , a dict or series.
+
+Example-1 : with dict argument:
+------------------------------------
+
+s = pd.Series([10,'cat',np.nan,'rabbit'])
+s1 = s.map({'cat':'kitten','rabbit':'puppy'})
+print(s1)
+
+
+Output:-
+------------
+0       NaN
+1    kitten
+2       NaN
+3     puppy
+dtype: object
+
+NOTE: Values that are not found in the dict are converted to NaN
+
+Example-2 : with function argument:
+-------------------------------------
+
+
+s = pd.Series([10,'cat',np.nan,'rabbit'])
+s1 = s.map(lambda x:f'The value is {x}')
+print(s1)
+
+OUTPUT:-
+--------------
+0        The value is 10
+1       The value is cat
+2       The value is nan
+3    The value is rabbit
+dtype: object
+
+Example
+
+def contentadd(x):
+    return f'I am {x}'
+
+s = pd.Series([10,'cat',np.nan,'rabbit'])
+s1 = s.map(contentadd)
+print(s1)
+
+
+Output:
+-------------
+0        I am 10
+1       I am cat
+2       I am nan
+3    I am rabbit
+dtype: object
+
+
+***NOTE: Here we can not pass extra arguments to the function.
 
 
 '''
+
+def contentadd(x):
+    return f'I am {x}'
+
+s = pd.Series([10,'cat',np.nan,'rabbit'])
+s1 = s.map(contentadd)
+print(s1)
+
+
 
 def read_csv_file():
     df = pd.read_csv('student.csv',
@@ -2667,5 +2885,5 @@ def read_csv_file():
     # convert df into series object
     s = df.squeeze()
     print(s.where(lambda x: x<500,other='First class'))
-read_csv_file()
+# read_csv_file()
 
