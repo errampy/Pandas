@@ -2865,15 +2865,45 @@ dtype: object
 
 ***NOTE: Here we can not pass extra arguments to the function.
 
+Note : To avoid applying the function to missing values (and keep then as NaN)
+na_action='ignore' can be used:
 
+Example:
+def contentadd(x):
+    return f'I am {x}'
+
+s = pd.Series([10,'cat',np.nan,'rabbit'])
+s1 = s.map(contentadd,na_action='ignore')
+print(s1)
+
+Output:-
+-------------
+0        I am 10
+1       I am cat
+2            NaN
+3    I am rabbit
+dtype: object
+(venv) user@use
+
+
+
+TRANSFORMING VALUES --> UPDATING VALUES
+
+
+PARTIAL UPDATION : update() it is always based on index
+FULL UPDATION : apply() 
+                map()
 '''
+
+
+#
 
 def contentadd(x):
     return f'I am {x}'
 
 s = pd.Series([10,'cat',np.nan,'rabbit'])
-s1 = s.map(contentadd)
-print(s1)
+s1 = s.map(contentadd,na_action='ignore')
+# print(s1)
 
 
 
@@ -2887,3 +2917,26 @@ def read_csv_file():
     print(s.where(lambda x: x<500,other='First class'))
 # read_csv_file()
 
+# s = pd.Series([10,20,30,40,50])
+# # print(s)
+# for i,v in s.iterkv():
+#     print(f'{i}------{v}')
+
+# DataFrame
+
+enos = [100,2000,300,400]
+enames=['Sunny','Bunny','Chinny','Vinny']
+esal = [1000.0,30000,5000,70000]
+eaddrs = ['Hyderabad','Mumbai','Chennai','Delhi']
+s = pd.Series(enames)
+print(s)
+print(s.ndim)#1
+print(s.shape)#(4,)
+
+df = pd.DataFrame({'eno':enos,'ename':enames,'esal':esal,'eadd':eaddrs})
+print('df \n',df)
+print(df.ndim)
+print(df.shape)
+print(df.eno)
+print(type(df.eno))
+print('df type ',df.dtypes)
